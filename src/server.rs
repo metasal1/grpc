@@ -1,26 +1,26 @@
 use tonic::{transport::Server, Request, Response, Status};
 
-use payments::bitcoin_server::{Bitcoin, BitcoinServer};
-use payments::{BtcPaymentResponse, BtcPaymentRequest};
+use payments::solana_server::{Solana, SolanaServer};
+use payments::{SolPaymentResponse, SolPaymentRequest};
 
 pub mod payments {
     tonic::include_proto!("payments");
 }
 
 #[derive(Debug, Default)]
-pub struct BitcoinService {}
+pub struct SolanaService {}
 
 #[tonic::async_trait]
-impl Bitcoin for BitcoinService {
+impl Solana for SolanaService {
     async fn send_payment(
         &self,
-        request: Request<BtcPaymentRequest>,
-    ) -> Result<Response<BtcPaymentResponse>, Status> {
-        println!("Got a request: {:?}", request);
+        request: Request<SolPaymentRequest>,
+    ) -> Result<Response<SolPaymentResponse>, Status> {
+        println!("Got request: {:?}", request);
 
         let req = request.into_inner();
 
-        let reply = BtcPaymentResponse {
+        let reply = SolPaymentResponse {
             successful: true,
             message: format!("Sent {}BTC to {}.", req.amount, req.to_addr).into(),
         };
@@ -32,10 +32,10 @@ impl Bitcoin for BitcoinService {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let addr = "[::1]:50051".parse()?;
-    let btc_service = BitcoinService::default();
+    let btc_service = SolanaService::default();
 
     Server::builder()
-        .add_service(BitcoinServer::new(btc_service))
+        .add_service(SolanaServer::new(sol_service))
         .serve(addr)
         .await?;
 
