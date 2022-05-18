@@ -22,7 +22,7 @@ impl Solana for SolanaService {
 
         let reply = SolPaymentResponse {
             successful: true,
-            message: format!("Sent {}BTC to {}.", req.amount, req.to_addr).into(),
+            message: format!("Sent {}SOL to {}.", req.amount, req.to_addr).into(),
         };
 
         Ok(Response::new(reply))
@@ -32,7 +32,7 @@ impl Solana for SolanaService {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let addr = "[::1]:50051".parse()?;
-    let btc_service = SolanaService::default();
+    let sol_service = SolanaService::default();
 
     Server::builder()
         .add_service(SolanaServer::new(sol_service))
